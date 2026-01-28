@@ -1,24 +1,34 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { QueryProvider } from '@/utils/queryClient';
+'use client';
+import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase';
+import "./globals.css";
 
-export const metadata: Metadata = {
-  title: 'Middleman App',
-  description: 'Next.js 15 + Capacitor 8 Mobile App',
-};
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const supabase = createClient();
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  useEffect(() => {
+    const protectRoutes = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // If no session and trying to access dashboard, redirect to login
+      if (!session && pathname.startsWith('/dashboard')) {
+        router.push('/login');
+      }
+    };
+    protectRoutes();
+  }, [pathname, router]);
+
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        {/* Prevents UI from being hidden under the iPhone notch */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="safe-area-padding">
-        <QueryProvider>{children}</QueryProvider>
+      <body className="antialiased safe-area-bottom">
+        {children}
       </body>
     </html>
   );

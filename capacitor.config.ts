@@ -1,10 +1,13 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.middleman.app',
   appName: 'Middleman',
-  webDir: 'out', // Must match the Next.js output directory
+  // Next.js 'output: export' creates the 'out' folder
+  webDir: 'out',
+  bundledWebRuntime: false,
   server: {
+    // Allows Cloudinary and Supabase images to load over the local protocol
     androidScheme: 'https'
   }
 };

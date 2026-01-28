@@ -1,10 +1,18 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
+import { Capacitor } from '@capacitor/core';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables are not set');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const createClient = () => {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        // Essential for Mobile: persists session in the phone's storage
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: Capacitor.isNativePlatform() ? window.localStorage : undefined,
+      },
+    }
+  );
+};

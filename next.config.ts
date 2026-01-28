@@ -1,11 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',      // CRITICAL: Generates the 'out' folder for mobile
-  trailingSlash: true,   // Ensures routing works inside native WebViews
+  // Required for Capacitor: converts Next.js into static HTML/CSS/JS
+  output: 'export', 
+  
+  // Mobile apps don't have a backend image optimization server
   images: {
-    unoptimized: true,   // Mobile apps can't use the Next.js Image Optimization server
+    unoptimized: true,
   },
+  
+  // Prevents issues with Capacitor's local file protocol
+  trailingSlash: true, 
 };
 
 export default nextConfig;
