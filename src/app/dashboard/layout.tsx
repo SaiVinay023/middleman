@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase'
 
 export default function DashboardGuardian({ children }: { children: React.ReactNode }) {
   const router = useRouter()

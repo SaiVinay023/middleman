@@ -5,37 +5,58 @@
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
+  /* Define safe area variables for easier use in Tailwind */
+  --sat: env(safe-area-inset-top);
+  --sab: env(safe-area-inset-bottom);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-rgb: 0, 0, 0;
+    --background-rgb: 15, 23, 42; /* Use a nice Slate-900 for dark mode dashboard */
   }
+}
+
+/* 1. Reset and Mobile Fixes */
+html,
+body {
+  overscroll-behavior-y: none; /* Prevents "pull to refresh" on mobile browsers */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+  /* Fix for mobile keyboard pushing up layout */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Safe Area Insets for Mobile Devices (iPhone Notch, etc.) */
-.safe-area-padding {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+/* 2. Enhanced Safe Area Handling */
+/* Add this class to your main wrapper in layout.tsx */
+.app-container {
+  min-height: 100vh;
+  /* Handles standard mobile height vs desktop */
+  min-height: 100dvh; 
+  padding-top: var(--sat);
 }
 
-/* Specific padding for mobile bottom navigation */
+/* Use this for your Mobile Bottom Nav component */
 .pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 0rem);
+  padding-bottom: var(--sab);
 }
 
-/* Ensure mobile viewport doesn't scroll bounce */
-html,
-body {
-  overscroll-behavior: none;
-  height: 100%;
-  width: 100%;
+/* 3. Smooth Transitions (Senior Polish) */
+* {
+  -webkit-tap-highlight-color: transparent; /* Removes the gray box when clicking buttons on Android/iOS */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 4. Scrollbar hide for mobile feel (optional) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
