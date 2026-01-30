@@ -1,34 +1,27 @@
-'use client';
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { createClient } from '@/lib/supabase';
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import { QueryProvider } from '@/utils/queryClient';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const supabase = createClient();
+export const metadata: Metadata = {
+  title: 'Middleman App',
+  description: 'Next.js 15 + Capacitor 8 Mobile App',
+};
 
-  useEffect(() => {
-    const protectRoutes = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      // If no session and trying to access dashboard, redirect to login
-      if (!session && pathname.startsWith('/dashboard')) {
-        router.push('/login');
-      }
-    };
-    protectRoutes();
-  }, [pathname, router]);
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
-        {/* Prevents UI from being hidden under the iPhone notch */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
       </head>
-      <body className="antialiased safe-area-bottom">
-        {children}
+      <body className="safe-area-padding">
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
