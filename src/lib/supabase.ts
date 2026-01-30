@@ -16,3 +16,6 @@ export const createClient = () => {
     }
   );
 };
+
+// Singleton instance for easy importing
+export const supabase = createClient();
