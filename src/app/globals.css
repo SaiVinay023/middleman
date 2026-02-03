@@ -3,60 +3,76 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 17, 24, 39; /* Gray-900: Deep dark gray, better than pure black */
   --background-rgb: 255, 255, 255;
-  /* Define safe area variables for easier use in Tailwind */
   --sat: env(safe-area-inset-top);
   --sab: env(safe-area-inset-bottom);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 15, 23, 42; /* Use a nice Slate-900 for dark mode dashboard */
-  }
 }
 
 /* 1. Reset and Mobile Fixes */
 html,
 body {
-  overscroll-behavior-y: none; /* Prevents "pull to refresh" on mobile browsers */
+  overscroll-behavior-y: none;
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  /* Force the text color to stay dark on the body for now */
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  /* Fix for mobile keyboard pushing up layout */
   display: flex;
   flex-direction: column;
 }
 
-/* 2. Enhanced Safe Area Handling */
-/* Add this class to your main wrapper in layout.tsx */
+/* 2. FIX FOR WHITE TEXT IN INPUTS (The main issue) */
+@layer base {
+  input, textarea, select {
+    @apply text-gray-900 bg-white border-gray-200;
+  }
+  
+  /* This ensures that even if the system is in dark mode, 
+     the inputs stay legible with dark text */
+  @media (prefers-color-scheme: dark) {
+    input, textarea, select {
+      color: #111827 !important; /* Force Gray-900 */
+      background-color: #ffffff !important;
+    }
+  }
+}
+
+/* 3. Browser Auto-fill Fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827;
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 4. Enhanced Safe Area Handling */
 .app-container {
   min-height: 100vh;
-  /* Handles standard mobile height vs desktop */
   min-height: 100dvh; 
   padding-top: var(--sat);
 }
 
-/* Use this for your Mobile Bottom Nav component */
 .pb-safe {
   padding-bottom: var(--sab);
 }
 
-/* 3. Smooth Transitions (Senior Polish) */
+/* 5. Senior Polish */
 * {
-  -webkit-tap-highlight-color: transparent; /* Removes the gray box when clicking buttons on Android/iOS */
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 4. Scrollbar hide for mobile feel (optional) */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
 }
