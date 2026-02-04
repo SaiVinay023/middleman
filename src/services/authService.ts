@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { z } from 'zod'
 import { signupSchema, loginSchema } from '@/lib/schemas/auth'
+import { logAuthError } from '@/lib/errorTracking'
 
 export const AuthService = {
   async register(values: z.infer<typeof signupSchema>) {
@@ -14,6 +15,7 @@ export const AuthService = {
         }
       }
     })
+        logAuthError(error, 'register', values.email);
     if (error) throw error
     return data
   },
@@ -23,12 +25,14 @@ export const AuthService = {
       email: values.email,
       password: values.password
     })
+    logAuthError(error, 'login', values.email);
     if (error) throw error
     return data
   },
 
   async sendResetCode(email: string) {
     const { error } = await supabase.auth.resetPasswordForEmail(email)
+    logAuthError(error, 'password_reset', email);
     if (error) throw error
   }
 }
