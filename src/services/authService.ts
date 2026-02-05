@@ -25,8 +25,10 @@ export const AuthService = {
       email: values.email,
       password: values.password
     })
-    logAuthError(error, 'login', values.email);
-    if (error) throw error
+    if (error) {
+    logAuthError(error, 'login', values.email);  // ✅ Only log when error exists
+    throw error
+  }
     return data
   },
 

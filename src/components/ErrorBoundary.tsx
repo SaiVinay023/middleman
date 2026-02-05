@@ -1,22 +1,26 @@
 // src/components/ErrorBoundary.tsx
 'use client';
 import React from 'react';
+import { logCriticalError } from '@/lib/errorTracking';
 
 export class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
-  { hasError: boolean }
+  { hasError: boolean; error: Error | null }
 > {
   constructor(props: any) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
-    console.error('[ErrorBoundary]', error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    logCriticalError(error, {
+      component: 'ErrorBoundary',
+      metadata: { errorInfo },
+    });
   }
 
   render() {

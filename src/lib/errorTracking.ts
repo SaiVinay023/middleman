@@ -143,7 +143,13 @@ export const logError = (
 /**
  * Helper for authentication errors
  */
-export const logAuthError = (error: Error | string, action: string, email?: string): void => {
+export const logAuthError = (
+  error: Error | string | null, 
+  action: string, 
+  email?: string
+): void => {
+  if (!error) return; // ✅ Early return for null/undefined
+  
   logError(error, ErrorSeverity.HIGH, {
     action,
     component: 'Authentication',
