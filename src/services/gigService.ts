@@ -9,8 +9,19 @@ export const GigService = {
       .order('created_at', { ascending: false })
 
     if (filters?.query) {
-      query = query.ilike('title', `%${filters.query}%`)
+  // Supabase sanitizes parameters automatically when using proper methods
+      const sanitized = filters.query.replace(/[%_]/g, '\\$&'); // Escape wildcards
+      query = query.ilike('title', `%${sanitized}%`)
     }
+
+// BETTER: Use textSearch for full-text search
+    if (filters?.query) {
+    query = query.textSearch('title', filters.query, {
+      type: 'websearch',
+      config: 'english'
+      });
+    }
+
 
     const { data, error } = await query
     if (error) throw error
@@ -30,31 +41,41 @@ export const GigService = {
   },
 
   // Logic: Claim a gig
-  async claimGig(gigId: string, userId: string) {
-    const { data, error } = await supabase
-      .from('gigs')
-      .update({ 
-        technician_id: userId, 
-        status: 'assigned' 
-      })
-      .eq('id', gigId)
-      .select()
+async claimGig(gigId: string, userId: string) {
+  const { data, error } = await supabase
+    .from('gigs')
+    .update({ 
+      technician_id: userId, 
+      status: 'assigned',
+      claimed_at: new Date().toISOString()
+    })
+    .eq('id', gigId)
+    .is('technician_id', null)  // ✅ Only update if unclaimed
+    .eq('status', 'available')  // ✅ Only available gigs
+    .select()
+    .single();
+  
+  if (error || !data) {
+    throw new Error('Gig already claimed or unavailable');
+  }
+  
+  return data;
+},
 
-    if (error) throw error
-    return data
-  },
-
-  async updateGigStatus(gigId: string, newStatus: 'in_progress' | 'pending_review' | 'completed') {
+async updateGigStatus(gigId: string, newStatus: string, userId: string) {
   const { data, error } = await supabase
     .from('gigs')
     .update({ status: newStatus })
     .eq('id', gigId)
+    .eq('technician_id', userId)  // ✅ Verify ownership
     .select()
     .single();
-
+  
   if (error) throw error;
+  if (!data) throw new Error('Unauthorized: You do not own this gig');
   return data;
 },
+
 
 async submitCompletion(gigId: string, cloudinaryUrl: string) {
     const { data, error } = await supabase

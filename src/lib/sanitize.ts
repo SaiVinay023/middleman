@@ -2,7 +2,7 @@ import DOMPurify from 'isomorphic-dompurify';
 
 export const sanitizeInput = (input: string): string => {
   return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [],
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em'],
     ALLOWED_ATTR: [],
   });
 };
@@ -13,3 +13,4 @@ export const sanitizeHTML = (html: string): string => {
     ALLOWED_ATTR: ['href', 'target', 'rel'],
   });
 };
+

@@ -143,19 +143,18 @@ export const logError = (
 /**
  * Helper for authentication errors
  */
-export const logAuthError = (
-  error: Error | string | null, 
-  action: string, 
-  email?: string
-): void => {
-  if (!error) return; // ✅ Early return for null/undefined
-  
+export const logAuthError = (error: Error | string, action: string, email?: string): void => {
+  const emailHash = email ? 
+    `hash_${email.split('@')[1]}` :  // Only log domain, not user
+    undefined;
+    
   logError(error, ErrorSeverity.HIGH, {
     action,
     component: 'Authentication',
-    metadata: { email: email ? email.substring(0, 3) + '***' : undefined },
+    metadata: { emailDomain: emailHash },
   });
 };
+
 
 /**
  * Helper for data fetching errors

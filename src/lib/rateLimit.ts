@@ -6,11 +6,20 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-export const authRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(5, '15 m'), // 5 attempts per 15 min
+export const authLimiter = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, '15 m'),
   analytics: true,
 });
+
+// In authService.ts
+async login(values: z.infer<typeof loginSchema>) {
+  const identifier = values.email;
+  const { success } = await authLimiter.limit(identifier);
+  
+  if (!success) {
+    throw new Error('Too many login attempts. Please try again in 15 minutes.');
+  } }
 
 export const apiRateLimit = new Ratelimit({
   redis,

@@ -76,4 +76,17 @@ export const AdminService = {
 
     if (error) throw error;
   }
+
 }
+
+// Add cron job or scheduled function
+/*  export async function cleanupOldData() {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  await supabase
+    .from('gigs')
+    .delete()
+    .not('deleted_at', 'is', null)
+    .lt('deleted_at', thirtyDaysAgo.toISOString());
+} */
