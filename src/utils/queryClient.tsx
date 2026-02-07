@@ -26,18 +26,21 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
     }),
 
     defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000, 
-        retry: 3,
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-        refetchOnWindowFocus: false,
-        // ✅ 'onError' is no longer allowed here in v5
-      },
-      mutations: {
-        retry: 1,
-        // ✅ 'onError' is no longer allowed here in v5
-      },
-    },
+  queries: {
+    // Data like gigs/profile is not changing every second – keep it fresh for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    // Keep cache in memory for 10 minutes
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    retryDelay: (attemptIndex) =>
+      Math.min(500 * 2 ** attemptIndex, 10_000),
+    refetchOnWindowFocus: false,
+  },
+  mutations: {
+    retry: 0,
+  },
+},
+
   }));
 
   return (

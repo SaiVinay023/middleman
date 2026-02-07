@@ -23,10 +23,14 @@ export function useGigs(userId?: string, filters?: { query?: string }) {
   const claimMutation = useMutation({
     mutationFn: ({ gigId, techId }: { gigId: string, techId: string }) => 
       GigService.claimGig(gigId, techId),
-    onSuccess: () => {
-      // Invalidate both lists so the job "moves" from Available to My Gigs
-      queryClient.invalidateQueries({ queryKey: ['gigs'] })
-    }
+    onSuccess: (_data, variables) => {
+  queryClient.invalidateQueries({ queryKey: ['gigs', 'available'] });
+  if (variables.techId) {
+    queryClient.invalidateQueries({
+      queryKey: ['gigs', 'mine', variables.techId],
+    });
+  }
+},
   })
 
   // Inside your useGigs hook, add this mutation
@@ -34,19 +38,20 @@ const updateStatusMutation = useMutation({
   // 1. Update the mutationFn to accept userId
   mutationFn: ({ gigId, status, userId }: { gigId: string, status: any, userId: string }) => 
     GigService.updateGigStatus(gigId, status, userId), // ✅ Now passing all 3 arguments
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['gigs'] });
-  }
+  onSuccess: (_data, variables) => {
+  queryClient.invalidateQueries({ queryKey: ['gigs', 'mine', variables.userId] });
+  queryClient.invalidateQueries({ queryKey: ['gigs', 'available'] });
+},
 })
 
 const completeMutation = useMutation({
   // 1. ADD 'userId' to the object type here
   mutationFn: ({ gigId, cloudinaryUrl, userId }: { gigId: string, cloudinaryUrl: string, userId: string }) => 
     GigService.submitCompletion(gigId, cloudinaryUrl, userId), // 2. Pass it to the service
-  onSuccess: () => {
-    // Refresh the 'mine' and 'available' lists
-    queryClient.invalidateQueries({ queryKey: ['gigs'] });
-  }
+  onSuccess: (_data, variables) => {
+  queryClient.invalidateQueries({ queryKey: ['gigs', 'mine', variables.userId] });
+  queryClient.invalidateQueries({ queryKey: ['gigs', 'available'] });
+},
 });
 useEffect(() => {
     const channel = supabase
@@ -54,7 +59,7 @@ useEffect(() => {
       .on(
         'postgres_changes',
         {
-          event: '*', // Listen for Inserts, Updates, and Deletes
+          event: 'UPDATE', // Listen for Inserts, Updates, and Deletes
           schema: 'public',
           table: 'gigs',
         },
