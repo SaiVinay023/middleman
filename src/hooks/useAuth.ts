@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,7 +27,7 @@ export function useAuth() {
   }, [])
 
   // 2. Action Handler (For Login/Register buttons)
- /* const handleAction = async (action: () => Promise<any>, redirectPath?: string) => {
+  const handleAction = async (action: () => Promise<any>, redirectPath?: string) => {
     setLoading(true)
     setError(null)
     try {
@@ -38,7 +38,8 @@ export function useAuth() {
     } finally {
       setLoading(false)
     }
-  } */
+  } 
+
   const signIn = async (email: string, password: string) => {
   setIsLoading(true)
   setError(null)
@@ -62,7 +63,7 @@ export function useAuth() {
     isLoading,      // Combined loading state for session check
     loading,        // Specific loading for buttons
     error, 
-    //handleAction 
+    handleAction,
     signIn,
     signOut
   }
