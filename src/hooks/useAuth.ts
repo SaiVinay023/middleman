@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export function useAuth() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,7 +27,7 @@ export function useAuth() {
   }, [])
 
   // 2. Action Handler (For Login/Register buttons)
-  const handleAction = async (action: () => Promise<any>, redirectPath?: string) => {
+ /* const handleAction = async (action: () => Promise<any>, redirectPath?: string) => {
     setLoading(true)
     setError(null)
     try {
@@ -38,13 +38,32 @@ export function useAuth() {
     } finally {
       setLoading(false)
     }
+  } */
+  const signIn = async (email: string, password: string) => {
+  setIsLoading(true)
+  setError(null)
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+  } catch (err: any) {
+    setError(err.message)
+  } finally {
+    setIsLoading(false)
   }
+ }
+  const signOut = async () => {
+  await supabase.auth.signOut()
+  router.push('/auth/login')
+ }
+
 
   return { 
     user,           // Now AdminGuard can see the user!
     isLoading,      // Combined loading state for session check
     loading,        // Specific loading for buttons
     error, 
-    handleAction 
+    //handleAction 
+    signIn,
+    signOut
   }
 }
