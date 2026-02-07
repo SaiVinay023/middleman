@@ -77,7 +77,7 @@ async updateGigStatus(gigId: string, newStatus: string, userId: string) {
 },
 
 
-async submitCompletion(gigId: string, cloudinaryUrl: string) {
+async submitCompletion(gigId: string, cloudinaryUrl: string, userId: string) {
     const { data, error } = await supabase
       .from('gigs')
       .update({ 
@@ -85,12 +85,14 @@ async submitCompletion(gigId: string, cloudinaryUrl: string) {
         completion_photo_url: cloudinaryUrl 
       })
       .eq('id', gigId)
+      .eq('technician_id', userId) // ✅ Verify that this user actually owns the gig
       .select()
       .single();
 
     if (error) throw error;
+    if (!data) throw new Error('Unauthorized: You do not have permission to complete this gig');
     return data;
-  },
+},
 
   async getBalance(userId: string) {
     const { data, error } = await supabase

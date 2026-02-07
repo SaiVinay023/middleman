@@ -1,11 +1,11 @@
 'use client';
 import { useAdminGigs } from '@/hooks/useAdminGigs';
-import { Trash2, Plus, Search, Filter, MoreHorizontal } from 'lucide-react';
+import { Trash2, MoreHorizontal } from 'lucide-react';
 
 export default function AdminGigsPage() {
-  const { gigs, isLoading, deleteGig, createGig, isCreating } = useAdminGigs();
+  const { gigs, isLoading, deleteGig} = useAdminGigs();
 
-  const handleAddTestGig = () => {
+ /* const handleAddTestGig = () => {
     createGig({
       title: 'Fiber Optic Repair',
       description: 'Repair broken line at Main St.',
@@ -13,7 +13,7 @@ export default function AdminGigsPage() {
       location: 'Downtown',
       status: 'pending_admin' // Starts in your review queue
     });
-  };
+  }; */
 
   if (isLoading) return <div className="p-10 text-center animate-pulse font-black text-gray-400 uppercase tracking-widest">Initialising Database...</div>;
 
@@ -24,13 +24,13 @@ export default function AdminGigsPage() {
           <h1 className="text-4xl font-black text-gray-900 tracking-tighter uppercase">Master Gigs List</h1>
           <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Full Database Control</p>
         </div>
-        <button 
-          onClick={handleAddTestGig}
-          disabled={isCreating}
+       {/* <button 
+          onClick={handleAddTestGig} 
+          disabled={isCreating} 
           className="flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black shadow-xl active:scale-95 transition-all hover:bg-black"
-        >
+        > 
           <Plus size={20} strokeWidth={3} /> Create Work Order
-        </button>
+        </button>  */}
       </header>
 
       {/* Stats Quick-View */}

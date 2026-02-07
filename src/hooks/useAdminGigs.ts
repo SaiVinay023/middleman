@@ -48,15 +48,19 @@ export function useAdminGigs() {
     }
   })
 
-  return {
-    gigs: allGigs.data,
-    pendingCompany: pendingCompany.data,
-    pendingReview: pendingReview.data,
-    isLoading: allGigs.isLoading || pendingCompany.isLoading || pendingReview.isLoading,
-    publishGig: publishMutation.mutate,
-    isPublishing: publishMutation.isPending,
-    approveWork: approveWorkMutation.mutate,
-    isApproving: approveWorkMutation.isPending,
-    deleteGig: deleteMutation.mutate
-  }
+ // A more "Bulletproof" return
+return {
+  gigs: allGigs.data ?? [],
+  pendingCompany: pendingCompany.data ?? [],
+  pendingReview: pendingReview.data ?? [],
+  // Using isFetching ensures the UI knows when data is being refreshed in the background
+  isLoading: allGigs.isLoading || pendingCompany.isLoading || pendingReview.isLoading,
+  isFetching: allGigs.isFetching || pendingCompany.isFetching || pendingReview.isFetching,
+  
+  publishGig: publishMutation.mutate,
+  isPublishing: publishMutation.isPending,
+  approveWork: approveWorkMutation.mutate,
+  isApproving: approveWorkMutation.isPending,
+  deleteGig: deleteMutation.mutate
+}
 }

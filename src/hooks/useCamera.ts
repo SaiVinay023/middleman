@@ -24,9 +24,12 @@ export function useCamera() {
         setImage(photo.dataUrl);
         return photo.dataUrl;
       }
+      
+      return null; // Return null if dataUrl is somehow missing
     } catch (err) {
       setError('Failed to take picture');
       console.error('Camera error:', err);
+      return null; // Return null on error
     } finally {
       setLoading(false);
     }
@@ -48,9 +51,12 @@ export function useCamera() {
         setImage(photo.dataUrl);
         return photo.dataUrl;
       }
+      
+      return null; // Return null if dataUrl is missing
     } catch (err) {
       setError('Failed to select image');
       console.error('Gallery error:', err);
+      return null; // Return null on error
     } finally {
       setLoading(false);
     }

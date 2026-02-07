@@ -20,9 +20,9 @@ export enum ErrorSeverity {
 
 export interface LoggedError {
   message: string;
-  stack?: string;
+  stack?: string | undefined; 
   severity: ErrorSeverity;
-  context?: ErrorContext;
+  context?: ErrorContext | undefined;
   timestamp: string;
   environment: string;
 }

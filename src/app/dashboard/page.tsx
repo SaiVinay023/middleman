@@ -4,7 +4,7 @@ import { useCamera } from '@/hooks/useCamera';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useGigs } from '@/hooks/useGigs';
 import { useAuth } from '@/hooks/useAuth';
-import { Briefcase, DollarSign, Camera, TrendingUp, Search, ChevronRight } from 'lucide-react';
+import { Briefcase, Camera, TrendingUp, Search, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Dashboard() {
@@ -23,7 +23,7 @@ export default function Dashboard() {
     await takePicture();
   };
 
-  const isDataLoading = available.isLoading || mine.isLoading;
+  //const isDataLoading = available.isLoading || mine.isLoading;
 
   return (
     <div className="pb-24 lg:pb-10">

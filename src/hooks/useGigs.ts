@@ -31,22 +31,23 @@ export function useGigs(userId?: string, filters?: { query?: string }) {
 
   // Inside your useGigs hook, add this mutation
 const updateStatusMutation = useMutation({
-  mutationFn: ({ gigId, status }: { gigId: string, status: any }) => 
-    GigService.updateGigStatus(gigId, status),
+  // 1. Update the mutationFn to accept userId
+  mutationFn: ({ gigId, status, userId }: { gigId: string, status: any, userId: string }) => 
+    GigService.updateGigStatus(gigId, status, userId), // ✅ Now passing all 3 arguments
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['gigs'] });
   }
 })
 
 const completeMutation = useMutation({
-  mutationFn: ({ gigId, cloudinaryUrl }: { gigId: string, cloudinaryUrl: string }) => 
-    GigService.submitCompletion(gigId, cloudinaryUrl),
+  // 1. ADD 'userId' to the object type here
+  mutationFn: ({ gigId, cloudinaryUrl, userId }: { gigId: string, cloudinaryUrl: string, userId: string }) => 
+    GigService.submitCompletion(gigId, cloudinaryUrl, userId), // 2. Pass it to the service
   onSuccess: () => {
     // Refresh the 'mine' and 'available' lists
     queryClient.invalidateQueries({ queryKey: ['gigs'] });
   }
 });
-
 useEffect(() => {
     const channel = supabase
       .channel('schema-db-changes')
@@ -57,7 +58,7 @@ useEffect(() => {
           schema: 'public',
           table: 'gigs',
         },
-        (payload) => {
+        (_payload) => {
           // Whenever a gig changes in the DB, tell React Query to refresh the data
           queryClient.invalidateQueries({ queryKey: ['gigs'] });
         }

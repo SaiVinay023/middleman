@@ -1,28 +1,25 @@
 // src/lib/auditLog.ts
+import { supabase } from '@/lib/supabase'; // ✅ Add this import
+
 export const logAdminAction = async (
   adminId: string,
   action: string,
   resourceId: string,
   details: any
 ) => {
-  await supabase.from('audit_logs').insert({
+  // Simple way to get a placeholder or real IP if available
+  const ipAddress = typeof window !== 'undefined' ? 'client-side' : 'server-side';
+
+  const { error } = await supabase.from('audit_logs').insert({
     admin_id: adminId,
     action,
     resource_id: resourceId,
     details,
-    ip_address: await getClientIP(),
+    ip_address: ipAddress,
     timestamp: new Date().toISOString()
   });
-};
 
-// Use in adminService
-async publishGig(gigId: string, adminId: string) {
-  const { error } = await supabase
-    .from('gigs')
-    .update({ status: 'available' })
-    .eq('id', gigId);
-    
-  if (!error) {
-    await logAdminAction(adminId, 'PUBLISH_GIG', gigId, { status: 'available' });
+  if (error) {
+    console.error("Failed to log admin action:", error);
   }
-}
+};

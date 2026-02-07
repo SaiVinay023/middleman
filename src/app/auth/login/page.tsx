@@ -29,7 +29,11 @@ export default function LoginPage() {
         <div className="text-right">
           <Link href="/auth/forgot" className="text-sm text-blue-600 hover:underline">Forgot Password?</Link>
         </div>
-
+        {error && (
+        <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl text-sm font-bold animate-shake">
+        {error}
+        </div>
+        )}
         <button disabled={loading} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold">
           {loading ? 'Checking...' : 'Login'}
         </button>

@@ -1,6 +1,6 @@
 'use client';
 import { useAdminVerify } from '@/hooks/useAdminVerify';
-import { Check, X, ExternalLink, ShieldCheck, UserCheck } from 'lucide-react';
+import { ExternalLink, ShieldCheck, UserCheck } from 'lucide-react';
 
 export default function AdminVerifyPage() {
   const { pendingDocs, isLoading, updateStatus, isProcessing } = useAdminVerify();

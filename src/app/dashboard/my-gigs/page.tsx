@@ -79,7 +79,7 @@ export default function MyWorkPage() {
 
       // 3. Update status to 'pending_review' in Supabase
       if (uploadData.secure_url) {
-        completeGig({ gigId, cloudinaryUrl: uploadData.secure_url });
+        completeGig({ gigId, cloudinaryUrl: uploadData.secure_url, userId: user?.id || '' });
       }
     } catch (err) {
       console.error("Completion flow failed:", err);
@@ -179,7 +179,7 @@ export default function MyWorkPage() {
                     </div>
                   ) : (
                     <button 
-                      onClick={() => updateStatus({ gigId: gig.id, status: 'in_progress' })}
+                      onClick={() => updateStatus({ gigId: gig.id, status: 'in_progress', userId: user?.id || ''   })}
                       disabled={isUpdatingStatus || gig.status === 'pending_review' || gig.status === 'completed'}
                       className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black text-lg shadow-2xl active:scale-[0.98] transition flex items-center justify-center gap-3 disabled:bg-gray-200 disabled:text-gray-400"
                     >

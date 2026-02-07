@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: https: blob:",
           "font-src 'self' data:",
-          "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ik.imagekit.io",
+          "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://warm-cicada-49280.upstash.io https://api.cloudinary.com",
           "frame-ancestors 'none'",
         ].join('; ')
           },
