@@ -12,7 +12,7 @@ export default function Signup() {
   })
 
   const onSubmit = (data: any) => {
-    handleAction(() => AuthService.register(data), '/dashboard')
+    handleAction(() => AuthService.register(data), '/')
   }
 
   return (

@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
       if (updateError) throw updateError
       
       setIsSuccess(true)
-    }, '/auth/login')
+    }, '/login')
   }
 
   if (isSuccess) return <div className="p-10 text-center">Password updated! Redirecting...</div>

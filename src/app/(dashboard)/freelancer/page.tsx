@@ -10,17 +10,17 @@ import { useMemo } from 'react';
 
 
 const WeeklyGoalCard = dynamic(
-  () => import('./WeeklyGoalCard').then((m) => m.WeeklyGoalCard),
+  () => import('@/components/freelancer/WeeklyGoalCard').then((m) => m.WeeklyGoalCard),
   { ssr: false }
 );
 
 const PerformancePulse = dynamic(
-  () => import('./PerformancePulse').then((m) => m.PerformancePulse),
+  () => import('@/components/freelancer/PerformancePulse').then((m) => m.PerformancePulse),
   { ssr: false }
 );
 
 const RecentActivity = dynamic(
-  () => import('./RecentActivity').then((m) => m.RecentActivity),
+  () => import('@/components/freelancer/RecentActivity').then((m) => m.RecentActivity),
   { ssr: false }
 );
 

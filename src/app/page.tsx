@@ -1,48 +1,72 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const { user, profile, loading } = useAuth();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    // Wait until auth state is determined
+    if (loading) return;
 
-  if (!mounted) return null;
+    // If user is logged in, auto-redirect based on role
+    if (user && profile) {
+      switch (profile.role) {
+        case 'admin':
+          router.replace('/admin');
+          break;
+        case 'company':
+          router.replace('/company');
+          break;
+        case 'freelancer':
+        default:
+          router.replace('/freelancer');
+          break;
+      }
+    }
+  }, [user, profile, loading, router]);
 
+  // Show a clean landing page for guests, or a simple loader while checking auth
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // Only show this if the user is NOT logged in
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-white">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold text-gray-900">Welcome to Middleman</h1>
-        <p className="text-lg text-gray-600">
-          Next.js 15 + Capacitor 8 Mobile-First App
+      <div className="text-center space-y-6 max-w-md">
+        <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight">Middleman</h1>
+        <p className="text-xl text-gray-600">
+          The premium ecosystem for technicians and companies.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {/* Point to the specific login page */}
+        
+        <div className="flex flex-col gap-4 w-full pt-4">
           <Link
-            href="/auth/login" 
-            className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition active:scale-95"
+            href="/login" 
+            className="w-full px-6 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:bg-blue-700 transition active:scale-95"
           >
             Sign In
           </Link>
           
-          {/* Point to the specific signup page */}
           <Link
-            href="/auth/signup" 
-            className="px-6 py-3 bg-white text-blue-600 border border-blue-600 rounded-xl font-bold hover:bg-blue-50 transition active:scale-95"
+            href="/signup" 
+            className="w-full px-6 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-2xl font-bold text-lg hover:bg-blue-50 transition active:scale-95"
           >
-            Create Account
-          </Link>
-
-          <Link
-            href="/dashboard"
-            className="px-6 py-3 bg-gray-100 text-gray-800 rounded-xl font-bold hover:bg-gray-200 transition active:scale-95"
-          >
-            Go to Dashboard
+            Signup
           </Link>
         </div>
+        
+        <p className="text-sm text-gray-400 pt-8">
+          Next.js 15 & Capacitor 8 Certified
+        </p>
       </div>
     </main>
   );

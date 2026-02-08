@@ -13,7 +13,7 @@ export default function LoginPage() {
   })
 
   const onSubmit = (data: any) => {
-    handleAction(() => AuthService.login(data), '/dashboard')
+    handleAction(() => AuthService.login(data), '/')
   }
 
   return (
